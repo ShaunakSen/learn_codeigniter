@@ -111,3 +111,25 @@ class Users extends CI_Controller{
 
     Thus we are using a controller to access a model. This model makes queries to the database.
     Controller is getting the data, load the view and transfer the data to view. This is MVC
+
+    CRUD
+
+    $query = $this->db->query("SELECT * FROM users");
+    return $query->num_rows();
+    or $query->num_fields();
+
+    more functions:
+    In model:
+    public function get_users($user_id){
+    $this->db->where('id', $user_id);
+    $query = $this->db->get('users');
+    return $query->result();
+    }
+    So we need to pass in an id to this function
+    In controller
+    $data['results']=$this->User_model->get_users(1);
+
+    Also we can pass in the id via url
+    public function show($user_id){
+    $data['results'] = $this -> User_model -> get_users($user_id);
+    }
