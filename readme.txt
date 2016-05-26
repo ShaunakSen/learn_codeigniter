@@ -245,3 +245,54 @@ PROJECT
     In home.php
     h1 HELLO this is a view
 
+
+    I want to create another view
+    views
+     ->users
+        ->login_view.php
+
+    in main.php in .col-xs-3
+    $this->load->view('users/login_view');
+
+
+    Now build a form in login_view
+
+    <?php
+    echo form_open('users/login_view', $attributes);
+    echo form_close('users/login_view', $attributes);
+    ?>
+    1st parameter is action second is for attributes
+    But we need helper function for this to work
+    in autoload:
+    add form to helper
+
+    Now add some attributes to form
+    $attributes = array('id'=>'login_form', 'class'=>'form-horizontal');
+
+    Now create some input elements
+    .form-group
+        <?php
+        echo form_label('Username');
+        ?>
+        <?php
+        $data = array(
+        'class'=>'form-control',
+        'name'=>'username',
+        'placeholder'=>'Enter Username'
+        )
+        echo form_input($data);
+        ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
