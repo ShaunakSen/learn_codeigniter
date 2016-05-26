@@ -122,6 +122,9 @@ class Users extends CI_Controller{
     In model:
     public function get_users($user_id){
     $this->db->where('id', $user_id);
+    OR
+    $this->db->where(['id'=>$user_id])
+
     $query = $this->db->get('users');
     return $query->result();
     }
@@ -132,4 +135,68 @@ class Users extends CI_Controller{
     Also we can pass in the id via url
     public function show($user_id){
     $data['results'] = $this -> User_model -> get_users($user_id);
+    }
+
+    More functionality to where:
+    $this->db->where([
+    'id'=>$user_id,
+    'username'=>$username
+    ])
+
+    INSERTION
+
+    Create method in model:
+    public function create_users($data){
+        $this->db->insert('users', $data);
+    }
+
+    Create method in controller
+
+    public function insert(){
+    $username= 'suraj';
+    $password='1111';
+    }
+    $this->User_model->create_users([
+        'username' => $username,
+        'password' => $password
+    ]);
+    }
+
+    UPDATE
+
+    This method requires id to be passed explicitly
+
+    Create method in model:
+        public function update_users($data,$id){
+            $this->db->where(['id'=>$id]);
+            $this->db->update('users', $data);
+        }
+
+    Create method in controller
+
+        public function update(){
+
+        $id = 4;
+        $username= 'bhagu';
+        $password='111100';
+        $this->User_model->update_users([
+            'username' => $username,
+            'password' => $password
+        ],$id);
+        }
+
+    DELETE
+
+    in controller:
+
+    public function delete(){
+    $id=4;
+    $this->User_model->delete_user($id);
+    }
+
+    in model:
+
+    public function delete_user($id){
+    $this->db->where(['id'=>$id]);
+    $this->db->delete('users');
     }
