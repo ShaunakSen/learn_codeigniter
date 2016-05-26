@@ -200,3 +200,48 @@ class Users extends CI_Controller{
     $this->db->where(['id'=>$id]);
     $this->db->delete('users');
     }
+
+
+PROJECT
+
+    STRUCTURE
+
+    views
+    ->layouts
+      ->main.php
+
+    In main.php build up a standard HTML template
+    then link to stylesheets
+    <link rel="stylesheet" href = "<?php echo base_url() ?>assets/css/bootstrap.min.css">
+    similarly include js files
+    So we have created a view
+
+    Go to controller home.php
+    It is currently displaying the home view
+
+    public function index(){
+
+    $data['main_view'] = "home_view"
+    $this->load->view("layouts/main", $data);
+    }
+
+    this data contains a variable main_view which is home_view so from main.php we are loading in home_view
+    this is just like im passing data with var $main_view to layouts/main.php. This var contains value home_view
+    which is used to load up that view from main.php
+
+    in main.php create a container and properly align stuff
+    container
+        row
+            .xs-3
+            .xs-9
+                <?php $this->load->view($main_view);
+
+    Configure for base_url() method
+    go to applications/config
+    $autoload['helper']=array('url');
+    also configure ur base url
+    $config['base_url'] = 'https://localhost/series/ci/'
+
+    In home.php
+    h1 HELLO this is a view
+
