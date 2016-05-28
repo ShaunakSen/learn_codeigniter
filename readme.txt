@@ -258,8 +258,8 @@ PROJECT
     Now build a form in login_view
 
     <?php
-    echo form_open('users/login_view', $attributes);
-    echo form_close('users/login_view', $attributes);
+    echo form_open('Users/login', $attributes);
+    echo form_close();
     ?>
     1st parameter is action second is for attributes
     But we need helper function for this to work
@@ -283,8 +283,56 @@ PROJECT
         echo form_input($data);
         ?>
 
+    Similarly we create password inputs and a button too
+
+    Note: The action of the form points to a method in Users controller. Lets
+    create that method
+
+    In Users.php
+    public function login(){
+
+    }
+
+    Now we need to include form validations
+    for that include validation ie form_validation class in autoload libraries
+
+    In Users.php
+    public function login(){
+    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]');
+    $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[3]');
+    }
+    Now we need to echo the error messages to the user
+    We will do this using sessions
+    $autoload['libraries'] -> session
+
+    public function login(){
+        $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[3]');
+        if($this->form_validation->run()==FALSE){
+            $data = array(
+            'errors' => validation_errors()
+            );
+
+            $this->session->set_flashdata($data);
+            redirect('home');
+            //this not only sets session but unsets it also
+        }
+    }
+
+    In login_view we want to display these errors
+    just before opening form:
+    <?php
+    if($this->session->flashdata('errors'))
+    {
+    echo $this->session->flashdata('errors');
+    }
+    ?>
 
 
+    Now create a confirm password field
+
+
+    $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|min_length[3]|matches[password]')
 
 
 
