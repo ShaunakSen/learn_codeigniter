@@ -9,7 +9,7 @@
     ?>
 </h1>
 <?php
-foreach($results as $object){
+foreach ($results as $object) {
     echo $object->username . '<br/>';
 }
 ?>

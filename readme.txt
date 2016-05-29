@@ -334,6 +334,137 @@ PROJECT
 
     $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|min_length[3]|matches[password]')
 
+    Now we have checked when there are errors in our form. Next we have to perform action
+    when user submits form correctly
+
+    public function login(){
+            $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[3]');
+            $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[3]');
+            if($this->form_validation->run()==FALSE){
+                $data = array(
+                'errors' => validation_errors()
+                );
+
+                $this->session->set_flashdata($data);
+                redirect('Home');
+                //this not only sets session but unsets it also
+            }
+            else{
+            $username = $this->input->post('username');
+            $password = $this->input->post('password');
+            $this->User_model->login_user($username, $password)
+            }
+        }
+
+        Create this function in the model:
+
+        public function login_user($username, $password){
+
+            $this->db->where('username',$username);
+            $this->db->where('password',$password);
+            $result=$this->db->get('users');
+            if($result->num_rows()==1){
+                return $result->row(0)->id;
+            }
+            else{
+                return false
+            }
+
+        }
+
+        In controller in else statement:
+
+        else{
+            $username = $this->input->post('username');
+            $password = $this->input->post('password');
+            $user_id = $this->User_model->login_user($username, $password);
+
+            if($user_id){
+                $user_data = array(
+                    'user_id' => $user_id,
+                    'username' => $username,
+                    'logged_in' => true
+                );
+
+                $this->session->set_userdata($user_data);
+                //this does not unset the session automatically like flash_data() method
+                $this->session->set_flashdata('login_success','You are now logged in');
+                redirect('Home/index');
+            }
+            else{
+                $this->session->set_flashdata('login_failed','Sorry ... Wrong credentials');
+                redirect('Home/index');
+            }
+        }
+
+        In home_view
+
+        <p class="bg-success">
+        <?php
+            if($this->session->flash_data('login_success')){
+                echo $this->session->flash_data('login_success');
+            }
+        ?>
+        </p>
+
+        <p class="bg-danger">
+        <?php
+            if($this->session->flash_data('login_failed')){
+                echo $this->session->flash_data('login_failed');
+            }
+        ?>
+        </p>
+
+        <h4>Hello.. This is Home View</h4>
+
+        Now we want to display form only when user is not logged in
+
+
+        <?php if ($this->session->userdata('logged_in')): ?>
+            <br/>
+            <h4>Hi....<?php $this->session->userdata('username'); ?></h4>
+            <br/>
+            <?php
+            echo form_open('Users/logout');
+            $data = array(
+                'class' => 'btn btn-primary',
+                'name' => 'submit',
+                'value' => 'Log Out'
+            );
+            echo form_submit($data);
+            ?>
+
+
+        <?php else: ?>
+
+        //display form here
+
+
+        Creating logout method in Users.php:
+
+        public function logout(){
+                $this->session->sess_destroy();
+                redirect('Home/index');
+            }
+
+
+
+        Create separate admin view
+
+        views
+        ->users
+            admin_view.php
+
+        <h2>Admin View</h2>
+
+        After logging in instead of redirecting
+
+        $data['main_view'] = "users/admin_view";
+        $this->load->view('layouts/main', $data);
+
+        So main.php loads up admin_view instead of home_view
+
+
 
 
 
